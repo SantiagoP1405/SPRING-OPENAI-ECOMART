@@ -6,6 +6,11 @@ import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.ChatOptionsBuilder;
 import org.springframework.web.bind.annotation.*;
 
+import com.knuddels.jtokkit.Encodings;
+import com.knuddels.jtokkit.api.EncodingRegistry;
+import com.knuddels.jtokkit.api.EncodingType;
+import com.knuddels.jtokkit.api.ModelType;
+
 
 @RestController
 @RequestMapping("/categorizador")
@@ -41,6 +46,8 @@ public class CategorizadorDeProductos {
                 Respuesta: Deportes
                 """;;
         
+        var tokens = contadorDeTokens(system, producto);
+        System.out.println(tokens);
         return this.chatClient.prompt()
             .system(system)
             .user(producto)
@@ -48,5 +55,11 @@ public class CategorizadorDeProductos {
                     .withTemperature(0.7).build())
             .call()
             .content();
+    }
+
+    private int contadorDeTokens(String system, String user){
+        var registry = Encodings.newDefaultEncodingRegistry();
+        var enc = registry.getEncodingForModel(ModelType.GPT_4O_MINI);
+        return enc.countTokens(system + user);
     }
 }
