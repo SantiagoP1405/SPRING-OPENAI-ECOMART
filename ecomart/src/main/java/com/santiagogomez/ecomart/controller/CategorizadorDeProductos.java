@@ -2,6 +2,7 @@ package com.santiagogomez.ecomart.controller;
 
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.ChatOptionsBuilder;
 import org.springframework.web.bind.annotation.*;
@@ -49,12 +50,13 @@ public class CategorizadorDeProductos {
         var tokens = contadorDeTokens(system, producto);
         System.out.println(tokens);
         return this.chatClient.prompt()
-            .system(system)
-            .user(producto)
-            .options(ChatOptionsBuilder.builder()
-                    .withTemperature(0.7).build())
-            .call()
-            .content();
+                .system(system)
+                .user(producto)
+                .options(ChatOptionsBuilder.builder()
+                        .withTemperature(0.7).build())
+                .advisors(new SimpleLoggerAdvisor())
+                .call()
+                .content();
     }
 
     private int contadorDeTokens(String system, String user){
