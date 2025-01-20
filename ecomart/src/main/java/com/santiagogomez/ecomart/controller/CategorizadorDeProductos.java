@@ -11,9 +11,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/categorizador")
 public class CategorizadorDeProductos {
 
+    private String model = "gpt-4o-mini";
+
     private final ChatClient chatClient;
     public CategorizadorDeProductos(ChatClient.Builder chatClientBuilder) {
-        this.chatClient = chatClientBuilder.build();
+        this.chatClient = chatClientBuilder
+                .defaultOptions(ChatOptionsBuilder
+                        .builder()
+                        .withModel(model)
+                        .build())
+                .build();
     }
 
     @GetMapping
